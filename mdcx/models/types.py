@@ -278,7 +278,7 @@ class BaseCrawlerResult:
             publisher="",
             release="",
             runtime="",
-            score="0.0",
+            score="",
             series="",
             studio="",
             tags=[],
