@@ -70,6 +70,21 @@ class StopScrape(Exception): ...
 class UnexpectedScrapeCancellation(Exception): ...
 
 
+def _should_process_metadata(
+    pre_data: ScrapeResult | None,
+    *,
+    is_nfo_existed: bool,
+    update_nfo: bool,
+) -> bool:
+    """Return whether scraped metadata still needs mapping and translation."""
+    if pre_data is not None:
+        return False
+
+    # Freshly scraped metadata must be processed even when NFO output is disabled.
+    # Data loaded from an existing NFO keeps the read-mode update restriction.
+    return not is_nfo_existed or update_nfo
+
+
 class Scraper:
     def __init__(self, crawler_provider: "CrawlerProviderProtocol"):
         self.crawler_provider = crawler_provider
@@ -695,9 +710,12 @@ class Scraper:
         # 显示json_data结果或日志
         show_result(res, start_time)
 
-        # 映射或翻译
-        # 当不存在已刮削数据，或者读取模式允许更新nfo时才进行映射翻译
-        if not pre_data and update_nfo:
+        # 映射或翻译。新刮削的数据不应依赖是否输出 NFO；读取已有 NFO 时仍需遵守更新设置。
+        if _should_process_metadata(
+            pre_data,
+            is_nfo_existed=is_nfo_existed,
+            update_nfo=update_nfo,
+        ):
             deal_some_field(res)  # 处理字段
             replace_special_word(res)  # 替换特殊字符
             await translate_title_outline(res, file_info.cd_part, movie_number)  # 翻译json_data（标题/介绍）
