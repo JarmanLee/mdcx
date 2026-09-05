@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from mdcx.config.enums import DownloadableFile, FixedScrapingType, HDPicSource, KeepableFile, Website
+from mdcx.config.enums import DownloadableFile, FixedScrapingType, HDPicSource, KeepableFile, Switch, Website
 from mdcx.config.models import DEFAULT_FIELD_SITE_PRIORITY, Config
 from mdcx.config.resource_policy import resource_policy
 from mdcx.config.v1 import ConfigV1
@@ -250,6 +250,7 @@ def test_default_config_template_is_valid_json_and_matches_current_model():
     assert config.amazon_skip_poster_size_precheck is False
     assert config.amazon_strict_pic_verify is False
     assert config.field_priority_try_all_images is False
+    assert Switch.QT_DIALOG not in config.switch_on
     assert config.website_youma == Config().website_youma
     assert config.get_field_config(CrawlerResultFields.TITLE).site_prority == DEFAULT_FIELD_SITE_PRIORITY
     for field in CrawlerResultFields:
