@@ -814,7 +814,6 @@
   "window_title": "hide",
   "switch_on": [
     "remain_task",
-    "qt_dialog",
     "passthrough",
     "copy_netdisk_nfo",
     "show_logs",
